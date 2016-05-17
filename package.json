@@ -1,0 +1,16 @@
+{
+  "name": "chappie",
+  "version": "0.0.1",
+  "description": "Chappie tells you who works where",
+  "main": "chappie.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RC <rc.chandru@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "botkit": "^0.1.1",
+    "nlp_compromise": "^4.10.5",
+    "redis": "2.4.2"
+  }
+}
