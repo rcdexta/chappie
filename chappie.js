@@ -15,6 +15,7 @@ var Redis = require('./storage/redis');
 var UserHandler = require('./handlers/user');
 var CalendarHandler = require('./handlers/calendar');
 var Interrogator = require('./handlers/interrogator');
+var CronJob = require('cron').CronJob;
 
 if (process.env.redis_url) {
     var redisStorage = Redis({
@@ -81,79 +82,6 @@ function trackBot(bot) {
 }
 
 
-controller.on('interactive_message_callback', function(bot, message) {
-
-    console.log('interactive_message_callback')
-    console.log(message)
-
-    var ids = message.callback_id.split(/\-/);
-    var user_id = ids[0];
-    var item_id = ids[1];
-
-    controller.storage.users.get(user_id, function(err, user) {
-
-        if (!user) {
-            user = {
-                id: user_id,
-                list: []
-            }
-        }
-
-        for (var x = 0; x < user.list.length; x++) {
-            if (user.list[x].id == item_id) {
-                if (message.actions[0].value=='flag') {
-                    user.list[x].flagged = !user.list[x].flagged;
-                }
-                if (message.actions[0].value=='delete') {
-                    user.list.splice(x,1);
-                }
-            }
-        }
-
-
-        var reply = {
-            text: 'Here is <@' + user_id + '>s list:',
-            attachments: [],
-        }
-
-        for (var x = 0; x < user.list.length; x++) {
-            reply.attachments.push({
-                title: user.list[x].text + (user.list[x].flagged? ' *FLAGGED*' : ''),
-                callback_id: user_id + '-' + user.list[x].id,
-                attachment_type: 'default',
-                actions: [
-                    {
-                        "name":"flag",
-                        "text": ":waving_black_flag: Flag",
-                        "value": "flag",
-                        "type": "button",
-                    },
-                    {
-                        "text": "Delete",
-                        "name": "delete",
-                        "value": "delete",
-                        "style": "danger",
-                        "type": "button",
-                        "confirm": {
-                            "title": "Are you sure?",
-                            "text": "This will do something!",
-                            "ok_text": "Yes",
-                            "dismiss_text": "No"
-                        }
-                    }
-                ]
-            })
-        }
-
-        bot.replyInteractive(message, reply);
-        controller.storage.users.save(user);
-
-
-    });
-
-});
-
-
 controller.on('create_bot',function(bot,config) {
 
     if (_bots[bot.config.token]) {
@@ -173,6 +101,18 @@ controller.on('create_bot',function(bot,config) {
                     convo.say('Type `help` to know more about how we can converse with each other...')
                 }
             });
+
+            // Ask user every 20 mins
+            var job = new CronJob({
+                cronTime: "0 */20 * * * *",
+                onTick: function() {
+                    console.log('Calling askUserEveryDay')
+                    Interrogator.askUserEveryDay(bot)
+                },
+                start: false,
+                timeZone: 'America/Los_Angeles'
+            });
+            job.start();
 
         });
     }
@@ -228,6 +168,7 @@ controller.hears(['identify yourself', 'who are you', 'what is your name'],
             '>. And what a lovely day!');
 
     });
+
 
 controller.hears(['ask me'],
     'direct_message,direct_mention,mention', function (bot, message) {

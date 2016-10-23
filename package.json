@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "botkit": "^0.4.0",
+    "cron": "^1.1.1",
     "moment": "^2.13.0",
     "nlp_compromise": "^6.5.3",
     "q": "^1.4.1",
