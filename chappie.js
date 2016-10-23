@@ -23,7 +23,8 @@ if (process.env.redis_url) {
 }
 
 var controller = Botkit.slackbot({
-    debug: false,
+    stats_optout: true,
+    debug: true,
     storage: redisStorage
 });
 
@@ -72,7 +73,7 @@ controller.hears(['identify yourself', 'who are you', 'what is your name'],
 controller.hears(['help', '\\?'],
     'direct_message,direct_mention,mention', function (bot, message) {
         bot.reply(message,
-            "Chappie's vocabulary below... Type anything else at your own risk :smiling_imp: \n `wfh` \n `wfh today`" +
+            "Chappie's can understand the following questions! Type anything else at your own risk :smiling_imp: \n `wfh` \n `wfh today`" +
             "\n `wfh tomorrow` \n `office today`  \n `office tomorrow`  \n`who is coming` \n `who is wfh`");
     });
 
@@ -80,7 +81,7 @@ controller.hears(['help', '\\?'],
 controller.hears(['.*'], 'direct_message,direct_mention,mention', function (bot, message) {
     controller.storage.users.get(message.user, function (err, user) {
         if (user) {
-            bot.reply(message, 'I cannot comprehend that! How about a ');
+            bot.reply(message, 'I cannot comprehend that! Type `help` to help me converse with you');
         } else {
             //First message from user
             bot.reply(message, "I'm consciousness. I'm alive. I'm Chappie.");

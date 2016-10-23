@@ -1,6 +1,7 @@
 'use strict';
 
 var UserHandler = require('./user');
+var Talker = require('./talker');
 let Time = require('../utils/time');
 let _ = require('underscore');
 var $q = require('q');
@@ -44,7 +45,7 @@ module.exports = {
         this.saveReply(controller, bot, message, key, 'home')
             .then(function (user) {
                 console.log('replying to user');
-                bot.reply(message, 'Okay ' + user.name + '! have fun!');
+                bot.reply(message, Talker.sayWfh(user.name));
             });
     },
 
@@ -52,7 +53,7 @@ module.exports = {
         let key = this.key(message.ts);
         this.saveReply(controller, bot, message, key, 'office')
             .then(function (user) {
-                bot.reply(message, 'Okay ' + user.name + '! See you at office!');
+                bot.reply(message, Talker.sayOffice(user.name));
             });
     },
 
@@ -61,7 +62,7 @@ module.exports = {
         let key = Time.formatYYYYMMDD(tomorrow);
         this.saveReply(controller, bot, message, key, 'office')
             .then(function (user) {
-                bot.reply(message, 'Okay ' + user.name + '! See you at office tomorrow!');
+                bot.reply(message, Talker.sayOffice(user.name));
             });
     },
 
@@ -70,7 +71,7 @@ module.exports = {
         let key = Time.formatYYYYMMDD(tomorrow);
         this.saveReply(controller, bot, message, key, 'home')
             .then(function (user) {
-                bot.reply(message, 'Okay ' + user.name + '! have fun tomorrow!');
+                bot.reply(message, Talker.sayWfh(user.name));
             });
     },
 
@@ -87,12 +88,12 @@ module.exports = {
                         console.log(allNames);
                         var undecided = _.difference(allNames, _.union(fromHome, toOffice));
                         console.log(undecided);
-                        bot.reply(message, "Yo-ho-ho! \n Yer hearties be chilling out at home: `" + fromHome +
-                            "`. \nAnd the brave hearted commuters to office: `" + toOffice + "`" +
-                            "\Well I dunno what these fellas are upto: `" + undecided + '`');
+                        bot.reply(message, "Yo-ho-ho! \n Dudes be chilling out at home: " + fromHome +
+                            "\nThe brave hearted commuters to office: `" + toOffice + "" +
+                            "\nAnd I dunno what these fellas are upto: `" + undecided + '');
                     });
                 } else {
-                    bot.reply(message, 'Alas! No one talked to Chappie! You gotta yourself a deserted office Matey!')
+                    bot.reply(message, 'Alas! No one talked to Chappie! You got yourself a deserted office today matey!')
                 }
             });
         });
