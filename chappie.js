@@ -1,7 +1,7 @@
 'use strict';
 
-if (!process.env.token) {
-    console.log('Error: Specify SlackBot `token` in environment');
+if (!process.env.clientId || !process.env.clientSecret) {
+    console.log('Error: Specify SlackBot `clientId` and `clientSecret` in environment');
     process.exit(1);
 }
 
@@ -14,6 +14,7 @@ let nlp = require("nlp_compromise");
 var Redis = require('./storage/redis');
 var UserHandler = require('./handlers/user');
 var CalendarHandler = require('./handlers/calendar');
+var Interrogator = require('./handlers/interrogator');
 
 if (process.env.redis_url) {
     var redisStorage = Redis({
@@ -24,13 +25,171 @@ if (process.env.redis_url) {
 
 var controller = Botkit.slackbot({
     stats_optout: true,
-    debug: true,
+    debug: false,
+    // interactive_replies: true,
     storage: redisStorage
+}).configureSlackApp(
+    {
+        clientId: process.env.clientId,
+        clientSecret: process.env.clientSecret,
+        scopes: ['bot'],
+    }
+);
+
+controller.setupWebserver(process.env.port,function(err,webserver) {
+    controller.createWebhookEndpoints(controller.webserver);
+
+    controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
+        if (err) {
+            res.status(500).send('ERROR: ' + err);
+        } else {
+            res.send('Success!');
+        }
+    });
+
+    webserver.post('/message_action',function(req,res) {
+        console.log('inside message action')
+
+        console.log(req.body.payload)
+
+        // var text = req.body.text;
+        // text = text.trim();
+
+        // controller.storage.teams.all(function(err,teams) {
+        //     var count = 0;
+        //     for (var t in teams) {
+        //         if (teams[t].incoming_webhook) {
+        //             count++;
+        //             controller.spawn(teams[t]).sendWebhook({
+        //                 text: text
+        //             },function(err) {
+        //                 if(err) {
+        //                     console.log(err);
+        //                 }
+        //             });
+        //         }
+        //     }
+
+            res.send('Good for you! Jai Hind!');
+        // });
+    });
 });
 
-var bot = controller.spawn({
-    token: process.env.token
-}).startRTM();
+var _bots = {};
+function trackBot(bot) {
+    _bots[bot.config.token] = bot;
+}
+
+
+controller.on('interactive_message_callback', function(bot, message) {
+
+    console.log('interactive_message_callback')
+    console.log(message)
+
+    var ids = message.callback_id.split(/\-/);
+    var user_id = ids[0];
+    var item_id = ids[1];
+
+    controller.storage.users.get(user_id, function(err, user) {
+
+        if (!user) {
+            user = {
+                id: user_id,
+                list: []
+            }
+        }
+
+        for (var x = 0; x < user.list.length; x++) {
+            if (user.list[x].id == item_id) {
+                if (message.actions[0].value=='flag') {
+                    user.list[x].flagged = !user.list[x].flagged;
+                }
+                if (message.actions[0].value=='delete') {
+                    user.list.splice(x,1);
+                }
+            }
+        }
+
+
+        var reply = {
+            text: 'Here is <@' + user_id + '>s list:',
+            attachments: [],
+        }
+
+        for (var x = 0; x < user.list.length; x++) {
+            reply.attachments.push({
+                title: user.list[x].text + (user.list[x].flagged? ' *FLAGGED*' : ''),
+                callback_id: user_id + '-' + user.list[x].id,
+                attachment_type: 'default',
+                actions: [
+                    {
+                        "name":"flag",
+                        "text": ":waving_black_flag: Flag",
+                        "value": "flag",
+                        "type": "button",
+                    },
+                    {
+                        "text": "Delete",
+                        "name": "delete",
+                        "value": "delete",
+                        "style": "danger",
+                        "type": "button",
+                        "confirm": {
+                            "title": "Are you sure?",
+                            "text": "This will do something!",
+                            "ok_text": "Yes",
+                            "dismiss_text": "No"
+                        }
+                    }
+                ]
+            })
+        }
+
+        bot.replyInteractive(message, reply);
+        controller.storage.users.save(user);
+
+
+    });
+
+});
+
+
+controller.on('create_bot',function(bot,config) {
+
+    if (_bots[bot.config.token]) {
+        // already online! do nothing.
+    } else {
+        bot.startRTM(function(err) {
+
+            if (!err) {
+                trackBot(bot);
+            }
+
+            bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    convo.say("I'm consciousness. I'm alive. I'm Chappie.")
+                    convo.say('Type `help` to know more about how we can converse with each other...')
+                }
+            });
+
+        });
+    }
+
+});
+
+
+// Handle events related to the websocket connection to Slack
+controller.on('rtm_open',function(bot) {
+    console.log('** The RTM api just connected!');
+});
+
+controller.on('rtm_close',function(bot) {
+    console.log('** The RTM api just closed');
+    // you may want to attempt to re-open
+});
+
 
 controller.hears(['.*office\\s+tomorrow.*', '.*coming\\s+to\\s+office\\s+tomorrow.*'], 'direct_message,direct_mention,mention', function (bot, message) {
     console.log('Responding to <wfh tomorrow>');
@@ -70,10 +229,15 @@ controller.hears(['identify yourself', 'who are you', 'what is your name'],
 
     });
 
+controller.hears(['ask me'],
+    'direct_message,direct_mention,mention', function (bot, message) {
+        Interrogator.dailyQueryToUser(controller, bot,message);
+    });
+
 controller.hears(['help', '\\?'],
     'direct_message,direct_mention,mention', function (bot, message) {
         bot.reply(message,
-            "Chappie's can understand the following questions! Type anything else at your own risk :smiling_imp: \n `wfh` \n `wfh today`" +
+            "Chappie can understand the following questions! Ask anything else at your own risk :smiling_imp: \n `wfh` \n `wfh today`" +
             "\n `wfh tomorrow` \n `office today`  \n `office tomorrow`  \n`who is coming` \n `who is wfh`");
     });
 
