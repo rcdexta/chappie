@@ -2,7 +2,7 @@
 
 var UserHandler = require('./user');
 var Talker = require('./talker');
-let Time = require('../utils/time');
+let Time = require('../helpers/time');
 let _ = require('underscore');
 var $q = require('q');
 
