@@ -26,6 +26,7 @@ module.exports = {
                                     };
                                 }
                                 user.name = convo.extractResponse('name');
+                                user.india_employee = convo.extractResponse('india_employee');
                                 user.location = convo.extractResponse('location');
                                 controller.storage.users.save(user, function (err, id) {
                                     bot.reply(message, 'Righto right. We are all set ' + user.name + '!');
@@ -41,11 +42,20 @@ module.exports = {
                     });
                 };
 
+                let askCountry = function (response, convo) {
+                    convo.say('Welcome to Pro.com! Are you working from India?');
+                    convo.ask('Type `yes` or `no`', function (response, convo) {
+                        convo.say('Good for you buddy!');
+                        askLocation(response, convo);
+                        convo.next();
+                    }, {'key': 'india_employee'});
+                };
+
                 let askName = function (response, convo) {
                     convo.say('I do not know your name yet!');
                     convo.ask('Type just your name...', function (response, convo) {
                         convo.say('Chappie will call you `' + response.text + '` from now on! :+1:');
-                        askLocation(response, convo);
+                        askCountry(response, convo);
                         convo.next();
                     }, {'key': 'name'});
                 };

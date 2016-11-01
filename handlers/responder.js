@@ -4,7 +4,7 @@ var CalendarHandler = require('./calendar')
 
 module.exports = {
 
-    handleResponses: function(controller) {
+    respondTo: function(controller) {
 
         controller.hears(['.*office\\s+tomorrow.*', '.*coming\\s+to\\s+office\\s+tomorrow.*'], 'direct_message,direct_mention,mention', function (bot, message) {
             console.log('Responding to <wfh tomorrow>');

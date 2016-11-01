@@ -106,7 +106,7 @@ controller.on('create_bot',function(bot,config) {
 
             // Ask user every 20 mins
             var job = new CronJob({
-                cronTime: "0 */2 * * * *",
+                cronTime: "0 */20 * * * *",
                 onTick: function() {
                     console.log('Calling askAboutTomorrow')
                     WfhHandler.askAboutTomorrow(controller, bot)
@@ -132,5 +132,5 @@ controller.on('rtm_close',function(bot) {
     // you may want to attempt to re-open
 });
 
-ResponseHandler.handleResponses(controller)
+ResponseHandler.respondTo(controller)
 
