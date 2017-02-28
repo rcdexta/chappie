@@ -11,7 +11,7 @@ Chappie is a slackbot for your workplace that helps you with the following:
 
 ### Demo
 
-
+![https://github.com/rcdexta/chappie/raw/master/assets/chappie.gif](https://github.com/rcdexta/chappie/raw/master/assets/chappie.gif)
 
 ### Setup
 
