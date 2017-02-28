@@ -8,6 +8,10 @@ module.exports = {
         return this.formatYYYYMMDD(moment(epoch_time * 1000));
     },
 
+    tomorrow: function() {
+      return moment(new Date()).add(1,'days');
+    },
+
     formatYYYYMMDD: function (time) {
         return time.format('YYYYMMDD')
     },

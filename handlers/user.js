@@ -17,38 +17,24 @@ module.exports = {
                         convo.next();
                     }, {'key': 'location'});
 
-                    convo.on('end', function (convo) {
-                        if (convo.status == 'completed') {
-                            controller.storage.users.get(message.user, function (err, user) {
-                                if (!user) {
-                                    user = {
-                                        id: message.user
-                                    };
-                                }
-                                user.name = convo.extractResponse('name');
-                                user.india_employee = convo.extractResponse('india_employee');
-                                user.location = convo.extractResponse('location');
-                                controller.storage.users.save(user, function (err, id) {
-                                    bot.reply(message, 'Righto right. We are all set ' + user.name + '!');
-                                    bot.reply(message, 'Type `help` anytime for Chappie to cheer you up!');
-                                    deferred.resolve(user);
-                                });
-                            });
-
-                        } else {
-                            // this happens if the conversation ended prematurely for some reason
-                            bot.reply(message, 'OK, nevermind!');
-                        }
-                    });
                 };
 
                 let askCountry = function (response, convo) {
-                    convo.say('Welcome to Pro.com! Are you working from India?');
-                    convo.ask('Type `yes` or `no`', function (response, convo) {
-                        convo.say('Good for you buddy!');
-                        askLocation(response, convo);
-                        convo.next();
-                    }, {'key': 'india_employee'});
+                    convo.ask('Welcome to Pro.com! Are you working from India?', [
+                      {
+                        pattern: bot.utterances.yes,
+                        callback: function(response, convo) {
+                          convo.say('Jai Hind!');
+                          askLocation(response, convo);
+                          convo.next();
+                        }
+                      },
+                      {
+                        pattern: bot.utterances.no,
+                        callback: function(response, convo) {
+                          convo.stop();
+                        }
+                      }], {'key': 'india_employee'});
                 };
 
                 let askName = function (response, convo) {
@@ -58,6 +44,23 @@ module.exports = {
                         askCountry(response, convo);
                         convo.next();
                     }, {'key': 'name'});
+
+                  convo.on('end', function (convo) {
+                      controller.storage.users.get(message.user, function (err, user) {
+                        if (!user) {
+                          user = {
+                            id: message.user
+                          };
+                        }
+                        user.name = convo.extractResponse('name');
+                        user.india_employee = convo.extractResponse('location') !== '';
+                        user.location = convo.extractResponse('location');
+                        controller.storage.users.save(user, function (err, id) {
+                          bot.reply(message, 'Righto right. We are all set ' + user.name + '!');
+                          bot.reply(message, 'Type `help` anytime for Chappie to cheer you up!');
+                        });
+                      });
+                  });
                 };
 
                 bot.startConversation(message, askName);
