@@ -14,13 +14,12 @@
   "author": "RC <rc.chandru@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "botkit": "^0.4.7",
+    "botkit": "0.5.1",
     "cron": "^1.1.1",
     "moment": "^2.13.0",
     "nlp_compromise": "^6.5.3",
     "q": "^1.4.1",
     "redis": "2.6.2",
-    "slackbots": "^1.0.2",
     "sprintf-js": "^1.0.3",
     "underscore": "^1.8.3"
   }
