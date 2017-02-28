@@ -1,6 +1,6 @@
 # Chappie
 
-![https://github.com/rcdexta/chappie/raw/master/assets/bot_icon.jpg](https://github.com/rcdexta/chappie/raw/master/assets/bot_icon.jpg)
+![https://github.com/rcdexta/chappie/raw/master/assets/bot_icon.png](https://github.com/rcdexta/chappie/raw/master/assets/bot_icon.png)
 
 Chappie is a slackbot for your workplace that helps you with the following:
 
