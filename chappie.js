@@ -25,7 +25,7 @@ if (process.env.redis_url) {
 
 var controller = Botkit.slackbot({
     stats_optout: true,
-    debug: true,
+    debug: false,
     storage: redisStorage
 }).configureSlackApp(
     {
@@ -50,6 +50,8 @@ controller.setupWebserver(process.env.port,function(err,webserver) {
         console.log('inside message action')
 
         const payload = req.body.payload
+
+        console.log(payload)
 
         // if (payload.actions[0].value === 'yes') {
         //
