@@ -17,7 +17,7 @@ Chappie is a slackbot for your workplace that helps you with the following:
 
 The first step is to create a Slack application. Start [here](https://api.slack.com/apps?new_app=1) and also refer [this guide](https://api.slack.com/slack-apps) for more details.
 
-At the end of the setup, you will be provided with a `clientId`  and `clientSecret` tokens, please make note of them.
+At the end of the setup, you will be provided with `clientId`  and `clientSecret` tokens, please make note of them.
 
 Now, clone the repository and install the npm dependencies
 
@@ -33,9 +33,9 @@ Once, you are all set, run the following command:
 clientId=<client_id> clientSecret=<client_secret> port=3000 redis_url=<redis_url> npm start
 ```
 
-This will start up chappie in server mode… There is one more step before we get Chappie up and running. The Slack app oauth configuration should point to the local server that you started. Refer to `OAuth & Permissions` section inside the app settings page and set the redirect URL to `http://localhost:3000/oauth`
+This will start up Chapiie in server mode… There is one more step before we get the bot up and running. The Slack app oauth configuration should point to the local server that you just started. Refer to `OAuth & Permissions` section inside the app settings page and set the redirect URL to `http://localhost:3000/oauth`
 
-Now, navigate to the browser and type `http://localhost:3000/login` and you will be redirect your slack team page asking for permissions to enable Chappie as an external app. Once you are done with that, Chappie will alive as a slack bot!
+Now, navigate to the browser and type `http://localhost:3000/login` and you will be redirected to your team slack page asking for permissions to enable Chappie as a third-party app. Once you are done with that, Chappie will come alive!
 
 ### License
 
