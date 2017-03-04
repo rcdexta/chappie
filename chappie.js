@@ -102,7 +102,7 @@ controller.on('create_bot', function (bot, config) {
 
       // Ask user every 20 mins
       var job = new CronJob({
-        cronTime: "0 30 22 * * 0-4",
+        cronTime: "0 00 16 * * 0-4",
         onTick: function () {
           console.log('Calling askAboutTomorrow')
           WfhHandler.askAboutTomorrow(controller, bot)
