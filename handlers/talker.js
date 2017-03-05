@@ -16,7 +16,8 @@ module.exports = {
         "Hope you have a calm and commute free day %s. I am serious! http://dilbert.com/strip/2014-07-10"],
 
     office: ["Great %s! High speed wifi and low carb sundal awaits you!",
-        "See you %s! I guess you love our office space! http://dilbert.com/strip/2015-10-24"],
+        "See you %s! I guess you love our office space! http://dilbert.com/strip/2015-10-24",
+        "Great! I am planning to order a new office chair for you: https://xkcd.com/1329/"],
 
     sayWfh: function (name) {
         return sprintf(this.wfh.shuffle(), name);

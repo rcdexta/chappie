@@ -31,7 +31,7 @@ module.exports = {
                     },
                     {
                       "name": "no",
-                      "text": "No",
+                      "text": "No WFH",
                       "style": "danger",
                       "type": "button",
                       "value": "no"

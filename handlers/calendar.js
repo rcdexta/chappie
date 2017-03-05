@@ -99,9 +99,9 @@ module.exports = {
             console.log(allNames);
             var undecided = _.difference(allNames, _.union(fromHome, toOffice));
             console.log(undecided);
-            bot.reply(message, "Yo-ho-ho! \n Dudes working from home: " + fromHome +
-              "\nThe brave hearted commuters to office: " + toOffice + "" +
-              "\nAnd I dunno what these fellas are upto: " + undecided);
+            bot.reply(message, "There you go...\n Office: " + toOffice +
+              "\nHome: " + fromHome + "" +
+              "\nDunno: " + undecided);
           });
         } else {
           bot.reply(message, 'Alas... No one! You got yourself a deserted office today matey!')
