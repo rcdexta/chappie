@@ -12,28 +12,30 @@ module.exports = {
 
     console.log('calling saveToCalender')
 
-    controller.storage.calendar.get(key, function (err, calendar) {
-      if (calendar) {
-        var users = calendar.users;
-        var existingUser = _.find(users, function (savedUser) {
-          return savedUser.name == user.name;
-        });
-        if (existingUser) {
-          existingUser.location = location;
+    controller.storage.users.get(user.id, function (err, user) {
+      controller.storage.calendar.get(key, function (err, calendar) {
+        if (calendar) {
+          var users = calendar.users;
+          var existingUser = _.find(users, function (savedUser) {
+            return savedUser.name == user.name;
+          });
+          if (existingUser) {
+            existingUser.location = location;
+          } else {
+            users.push({name: user.name, location: location});
+          }
+          calendar.users = users;
         } else {
-          users.push({name: user.name, location: location});
+          calendar = {
+            id: key,
+            users: [{name: user.name, location: location}]
+          }
         }
-        calendar.users = users;
-      } else {
-        calendar = {
-          id: key,
-          users: [{name: user.name, location: location}]
-        }
-      }
-      controller.storage.calendar.save(calendar, function () {
-        if (deferred) deferred.resolve(user);
+        controller.storage.calendar.save(calendar, function () {
+          if (deferred) deferred.resolve(user);
+        });
       });
-    })
+    });
 
   },
 
@@ -98,15 +100,20 @@ module.exports = {
             console.log(allNames);
             var undecided = _.difference(allNames, _.union(fromHome, toOffice));
             console.log(undecided);
-            bot.reply(message, "There you go...\n Office: " + toOffice +
-              "\nHome: " + fromHome + "" +
-              "\nDunno: " + undecided);
+
+            bot.reply(message, "There you go...\n Office: " + this.ifPresent(toOffice) +
+              "\nHome: " + this.ifPresent(fromHome) + "" +
+              "\nDunno: " + this.ifPresent(undecided));
           });
         } else {
-          bot.reply(message, 'Alas... No one! You got yourself a deserted office today matey!')
+          bot.reply(message, 'Alas... No one! You got yourself a deserted office  matey!')
         }
       });
     });
+  },
+
+  ifPresent: function(collection) {
+    return (collection && collection.length === 0 ? collection : '-')
   },
 
   statsToday: function(controller, bot, message) {
