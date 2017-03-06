@@ -86,8 +86,7 @@ module.exports = {
       });
   },
 
-  stats: function (controller, bot, message) {
-    let key = this.key(message.ts);
+  stats: function (key, controller, bot, message) {
     UserHandler.lookup(controller, bot, message).then(function () {
       controller.storage.calendar.get(key, function (err, calendar) {
         if (calendar) {
@@ -108,6 +107,17 @@ module.exports = {
         }
       });
     });
+  },
+
+  statsToday: function(controller, bot, message) {
+    let key = this.key(message.ts);
+    return this.stats(key, controller, bot, message);
+  },
+
+  statsTomorrow: function (controller, bot, message) {
+    let tomorrow = Time.tomorrowForEpochTime(message.ts);
+    let key = Time.formatYYYYMMDD(tomorrow);
+    return this.stats(key, controller, bot, message);
   },
 
   key: function (ts) {

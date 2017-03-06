@@ -28,12 +28,17 @@ module.exports = {
 
     controller.hears(['who\\s+are\\s+wfh', '.*who.*wfh.*', '.*who.*working\\s+from\\s+home.*'], 'direct_message,direct_mention,mention', function (bot, message) {
       console.log('Responding to <who is wfh>');
-      CalendarHandler.stats(controller, bot, message);
+      CalendarHandler.statsToday(controller, bot, message);
     });
 
-    controller.hears(['who\\s+are\\s+coming', '.*who.*coming.*', '.*who.*coming\\s+to\\s+office.*'], 'direct_message,direct_mention,mention', function (bot, message) {
+    controller.hears(['who\\s+are\\s+coming', 'who', '.*who.*coming\\s+to\\s+office.*'], 'direct_message,direct_mention,mention', function (bot, message) {
       console.log('Responding to <who is wfh>');
-      CalendarHandler.stats(controller, bot, message);
+      CalendarHandler.statsToday(controller, bot, message);
+    });
+
+    controller.hears(['who\\s+are\\s+coming\\s+tomorrow', 'who\\s+tomorrow'], 'direct_message,direct_mention,mention', function (bot, message) {
+      console.log('Responding to <who is coming tomorrow>');
+      CalendarHandler.statsTomorrow(controller, bot, message);
     });
 
     controller.hears(['identify yourself', 'who are you', 'what is your name'],
@@ -55,7 +60,7 @@ module.exports = {
         UserHandler.lookup(controller, bot, message).then(function (user) {
           bot.reply(message,
             "Chappie can understand the following questions! Ask anything else at your own risk :smiling_imp: \n `wfh` \n `wfh today`" +
-            "\n `wfh tomorrow` \n `office today`  \n `office tomorrow`  \n`who are coming` \n `who are wfh`");
+            "\n `wfh tomorrow` \n `office today`  \n `office tomorrow`  \n`who are coming` \n `who are wfh` \n `who are coming tomorrow`");
         });
       });
 
