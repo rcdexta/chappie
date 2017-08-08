@@ -89,6 +89,7 @@ module.exports = {
   },
 
   stats: function (key, controller, bot, message) {
+    var that = this;
     UserHandler.lookup(controller, bot, message).then(() => {
       controller.storage.calendar.get(key,  (err, calendar)  => {
         if (calendar) {
@@ -101,9 +102,9 @@ module.exports = {
             var undecided = _.difference(allNames, _.union(fromHome, toOffice));
             console.log(undecided);
 
-            bot.reply(message, "There you go...\n Office: " + this.ifPresent(toOffice) +
-              "\nHome: " + this.ifPresent(fromHome) + "" +
-              "\nDunno: " + this.ifPresent(undecided));
+            bot.reply(message, "There you go...\n Office: " + that.ifPresent(toOffice) +
+              "\nHome: " + that.ifPresent(fromHome) + "" +
+              "\nDunno: " + that.ifPresent(undecided));
           });
         } else {
           bot.reply(message, 'Alas... No one! You got yourself a deserted office  matey!')
