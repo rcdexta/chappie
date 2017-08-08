@@ -26,21 +26,21 @@ module.exports = {
       CalendarHandler.wfh(controller, bot, message);
     });
 
-    controller.hears(['who\\s+are\\s+wfh', '.*who.*wfh.*', '.*who.*working\\s+from\\s+home.*'], 'direct_message,direct_mention,mention', function (bot, message) {
-      console.log('Responding to <who is wfh>');
-      CalendarHandler.statsToday(controller, bot, message);
-    });
-
-    controller.hears(['who\\s+are\\s+coming', 'who', '.*who.*coming\\s+to\\s+office.*'], 'direct_message,direct_mention,mention', function (bot, message) {
-      console.log('Responding to <who is wfh>');
-      CalendarHandler.statsToday(controller, bot, message);
-    });
-
     controller.hears(['who\\s+are\\s+coming\\s+tomorrow', 'who\\s+tomorrow'], 'direct_message,direct_mention,mention', function (bot, message) {
       console.log('Responding to <who is coming tomorrow>');
       CalendarHandler.statsTomorrow(controller, bot, message);
     });
 
+
+    controller.hears(['who\\s+are\\s+wfh', '.*who.*wfh.*', '.*who.*working\\s+from\\s+home.*'], 'direct_message,direct_mention,mention', function (bot, message) {
+      console.log('Responding to <who is wfh>');
+      CalendarHandler.statsToday(controller, bot, message);
+    });
+
+    controller.hears(['who\\s+are\\s+coming', '.*who.*coming\\s+to\\s+office.*'], 'direct_message,direct_mention,mention', function (bot, message) {
+      console.log('Responding to <who is wfh>');
+      CalendarHandler.statsToday(controller, bot, message);
+    });
     controller.hears(['identify yourself', 'who are you', 'what is your name'],
       'direct_message,direct_mention,mention', function (bot, message) {
         bot.reply(message,
