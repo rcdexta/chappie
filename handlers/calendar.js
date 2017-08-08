@@ -89,8 +89,8 @@ module.exports = {
   },
 
   stats: function (key, controller, bot, message) {
-    UserHandler.lookup(controller, bot, message).then(function () {
-      controller.storage.calendar.get(key, function (err, calendar) {
+    UserHandler.lookup(controller, bot, message).then(() => {
+      controller.storage.calendar.get(key,  (err, calendar)  => {
         if (calendar) {
           var fromHome = _.pluck(_.filter(calendar.users, {location: 'home'}), 'name');
           var toOffice = _.pluck(_.filter(calendar.users, {location: 'office'}), 'name');
@@ -113,7 +113,7 @@ module.exports = {
   },
 
   ifPresent: function(collection) {
-    return (collection && collection.length === 0 ? collection : '-')
+    return (collection && collection.length !== 0) ? collection : '-'
   },
 
   statsToday: function(controller, bot, message) {

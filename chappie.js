@@ -62,7 +62,7 @@ controller.setupWebserver(process.env.port, function (err, webserver) {
 
     if (payload.callback_id === 'wfh_interaction') {
       const location = payload.actions[0].name === 'yes' ? 'office' : 'home';
-      let key = Time.formatYYYYMMDD(Time.tomorrow());
+      let key = Time.tomorrowForEpochTime(payload.message_ts);
       CalendarHandler.saveToCalendar(controller, null, user, key, location);
     }
 
