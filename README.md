@@ -33,7 +33,7 @@ Once, you are all set, run the following command:
 clientId=<client_id> clientSecret=<client_secret> port=3000 redis_url=<redis_url> npm start
 ```
 
-This will start up Chapiie in server mode… There is one more step before we get the bot up and running. The Slack app oauth configuration should point to the local server that you just started. Refer to `OAuth & Permissions` section inside the app settings page and set the redirect URL to `http://localhost:3000/oauth`
+This will start up Chappie in server mode… There is one more step before we get the bot up and running. The Slack app oauth configuration should point to the local server that you just started. Refer to `OAuth & Permissions` section inside the app settings page and set the redirect URL to `http://localhost:3000/oauth`
 
 Now, navigate to the browser and type `http://localhost:3000/login` and you will be redirected to your team slack page asking for permissions to enable Chappie as a third-party app. Once you are done with that, Chappie will come alive!
 
